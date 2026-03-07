@@ -182,6 +182,8 @@ void solve() {
 }
 
 int main() {
+    //file input
+    // ifstream cin("input.txt");
     cin.tie(0)->sync_with_stdio(0);
     int t;
     cin >> t;
