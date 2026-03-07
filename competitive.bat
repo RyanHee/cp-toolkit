@@ -1,2 +1,2 @@
 @echo off
-python D:\RYAN\programming\Competitive\script.py %*
+python "%~dp0script.py" %*
