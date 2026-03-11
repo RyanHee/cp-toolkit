@@ -15,17 +15,17 @@ EXTRA_WARN = ["-Wall", "-Wextra", "-Wpedantic"]
 
 CPP_TEMPLATE = """#include <bits/stdc++.h>
 using namespace std;
-#define ll long long
+#define int long long
 
 template<class T>
-istream& operator>>(istream& is, vector<T>& v) {
-    for (auto& x : v) is >> x;
+istream &operator>>(istream &is, vector<T> &v) {
+    for (auto &x : v) is >> x;
     return is;
 }
 
 template<class T>
-ostream& operator<<(ostream& os, const vector<T>& v) {
-    for (const auto& x : v) os << x << " ";
+ostream &operator<<(ostream &os, const vector<T> &v) {
+    for (const auto &x : v) os << x << " ";
     return os;
 }
 
@@ -38,9 +38,9 @@ void solve() {
 
 }
 
-int main() {
+signed main() {
     cin.tie(0)->sync_with_stdio(0);
-    int t;
+    int t=1;
     cin >> t;
     while (t--) 
         solve();
