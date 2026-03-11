@@ -1,26 +1,28 @@
 #include <bits/stdc++.h>
-#include<bits/extc++.h>
+// #include <bits/extc++.h>
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
 using namespace std;
 using namespace __gnu_pbds;
-#define ll long long
+#define int long long
 #define pii pair<int, int>
+#define i128 __int128_t
 
 template <typename T>
 using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
 template<class T>
-istream& operator>>(istream& is, vector<T>& v) {
-    for (auto& x : v) is >> x;
+istream &operator>>(istream &is, vector<T> &v) {
+    for (auto &x : v) is >> x;
     return is;
 }
 
 template<class T>
-ostream& operator<<(ostream& os, const vector<T>& v) {
-    for (const auto& x : v) os << x << " ";
+ostream &operator<<(ostream &os, const vector<T> &v) {
+    for (const auto &x : v) os << x << " ";
     return os;
 }
+
 
 // mod
 template<int P>
@@ -90,7 +92,7 @@ struct MInt {
 };
 constexpr int P = 1e9 + 7;
 using Z = MInt<P>;
-constexpr Z power(Z a, ll b) {
+constexpr Z power(Z a, int b) {
     assert(b >= 0);
     Z ans(1);
     for(; b; b >>= 1, a *= a)
@@ -101,7 +103,7 @@ template<int V>// invV<2> * 2 ==1 mod P
 constexpr Z invV = power(V, P - 2);
 
 // dsu
-constexpr int mxN=2e5+5;
+constexpr int mxN=2e5+5, inf=1e18;
 int rep[mxN], R[mxN];
 int find(int u){
     return (rep[u]==u?u:(rep[u]=find(rep[u])));
@@ -123,7 +125,6 @@ bool unite(int i, int j){
 
 // Fenwick Tree
 int F[mxN];
-
 void update(int i, int v) {
     for (++i;i<mxN;i+=i&(-i))
         F[i]+=v;
@@ -176,9 +177,9 @@ void bitmaskdp(){
 
 void bitmaskdpsubset(){
     int n=20;
-    for (int i=0;i<1<<n;++i) {
-        for (int j=i;j!=0;j=(j-1)&i){
-            int subset=i^j;
+    for (int mask=0;mask<1<<n;++mask) {
+        for (int submask=mask;submask!=0;submask=(submask-1)&mask){
+            int subset=mask^submask;
             // do whatever
         }
     }
@@ -226,18 +227,17 @@ struct SegTree {
         return min(query(node*2, l, mid, ql, qr), query(node*2+1, mid+1, r, ql, qr));
     }
 };
-// ql qr inclusive
-
+// ql qr inclusive 0 indexed
 
 void solve() {
-    
+    i128 x=0;
 }
 
-int main() {
+signed main() {
     // file input
     // ifstream cin("input.txt");
     cin.tie(0)->sync_with_stdio(0);
-    int t;
+    int t=1;
     cin >> t;
     while (t--) 
         solve();

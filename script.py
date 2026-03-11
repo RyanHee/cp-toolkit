@@ -14,8 +14,16 @@ STD = "-std=gnu++17"                    # C++17 with g++
 EXTRA_WARN = ["-Wall", "-Wextra", "-Wpedantic"]
 
 CPP_TEMPLATE = """#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 using namespace std;
+using namespace __gnu_pbds;
 #define int long long
+#define pii pair<int, int>
+#define i128 __int128_t
+ 
+template <typename T>
+using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
 template<class T>
 istream &operator>>(istream &is, vector<T> &v) {

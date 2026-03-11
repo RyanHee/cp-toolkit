@@ -1,0 +1,7 @@
+[
+  {
+    "directory": "D:\\RYAN\\programming\\Codeforces\\practice",
+    "file": "D:\\RYAN\\programming\\Codeforces\\practice\\A.cpp",
+    "command": "C:/msys64/mingw64/bin/g++.exe -std=gnu++17 -Wall -Wextra -Wpedantic -ID:/RYAN/programming/Codeforces/practice/include -c A.cpp -o A.o"
+  }
+]
