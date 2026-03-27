@@ -1,4 +1,4 @@
-import os
+﻿import os
 import subprocess
 import string
 import sys
@@ -13,50 +13,10 @@ GPP = r"C:/msys64/mingw64/bin/g++.exe"  # your g++
 STD = "-std=gnu++17"                    # C++17 with g++
 EXTRA_WARN = ["-Wall", "-Wextra", "-Wpedantic"]
 
-CPP_TEMPLATE = """#include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
-using namespace std;
-using namespace __gnu_pbds;
-#define int long long
-#define pii pair<int, int>
-#define i128 __int128_t
- 
-template <typename T>
-using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+SCRIPT_DIR = Path(__file__).resolve().parent
+CPP_TEMPLATE_FILE = SCRIPT_DIR / "A.cpp"
 
-template<class T>
-istream &operator>>(istream &is, vector<T> &v) {
-    for (auto &x : v) is >> x;
-    return is;
-}
-
-template<class T>
-ostream &operator<<(ostream &os, const vector<T> &v) {
-    for (const auto &x : v) os << x << " ";
-    return os;
-}
-
-template<class T>
-void chmin(T &a, T b) { a=min(a, b); }
-template<class T>
-void chmax(T &a, T b) { a=max(a, b); }
-
-void solve() {
-
-}
-
-signed main() {
-    cin.tie(0)->sync_with_stdio(0);
-    int t=1;
-    cin >> t;
-    while (t--) 
-        solve();
-    return 0;
-}
-"""
-
-# NEW: Java 模板（类名会与文件名一致：A.java -> public class A）
+# NEW: Java 妯℃澘锛堢被鍚嶄細涓庢枃浠跺悕涓€鑷达細A.java -> public class A锛?
 JAVA_TEMPLATE = """import java.io.*;
 import java.util.*;
 
@@ -81,8 +41,12 @@ public class %CLASS% {
 }
 """
 
-OUTPUT_EXTS = {'.out', '.ans', '.expected'}  # 单目录保底识别输出用；双目录则不限制扩展名
+OUTPUT_EXTS = {'.out', '.ans', '.expected'}  # 鍗曠洰褰曚繚搴曡瘑鍒緭鍑虹敤锛涘弻鐩綍鍒欎笉闄愬埗鎵╁睍鍚?
 
+def load_cpp_template() -> str:
+    if not CPP_TEMPLATE_FILE.exists():
+        raise FileNotFoundError(f"C++ template file not found: {CPP_TEMPLATE_FILE}")
+    return CPP_TEMPLATE_FILE.read_text(encoding="utf-8")
 def _canon_text(s: str) -> str:
     # Remove UTF-8 BOM (if present), normalize newlines, and strip trailing spaces ONLY.
     s = s.lstrip("\ufeff")
@@ -92,9 +56,9 @@ def _canon_text(s: str) -> str:
     return "\n".join(lines)
 
 def _show_invisibles(s: str) -> str:
-    # Visualize spaces and control chars: space→·, tab→⇥, show line ends
-    s = s.replace('\r', '␍').replace('\t', '⇥')
-    return "\n".join(ln.replace(" ", "·") + "⏎" for ln in s.split("\n"))
+    # Visualize spaces and control chars: space->dot, tab->\t, show line ends.
+    s = s.replace('\r', '\\r').replace('\t', '\\t')
+    return "\n".join(ln.replace(" ", ".") + "$" for ln in s.split("\n"))
 
 def _compare_and_report(src_filename: str, in_path: str, output: str, expected_output: str) -> None:
     canon_out = _canon_text(output)
@@ -102,10 +66,10 @@ def _compare_and_report(src_filename: str, in_path: str, output: str, expected_o
     tag = os.path.basename(in_path)
 
     if canon_out == canon_exp:
-        print(f"✅ {src_filename} passed on {tag}")
+        print(f"鉁?{src_filename} passed on {tag}")
         return
 
-    print(f"❌ {src_filename} failed on {tag}")
+    print(f"鉂?{src_filename} failed on {tag}")
     print("---- Expected (visible) ----")
     print(_show_invisibles(canon_exp))
     print("----   Got (visible)   ----")
@@ -126,7 +90,7 @@ def _alpha_index_from_filename(src_path: str) -> int:
     return ord(letter) - ord('A')
 
 def _sorted_files(dir_path: str):
-    """列出目录下所有普通文件（不含子目录与隐藏文件），按文件名排序。"""
+    """List regular files in one directory (exclude subdirs/hidden), sorted by name."""
     if not os.path.isdir(dir_path):
         return []
     all_paths = [os.path.join(dir_path, name) for name in os.listdir(dir_path)]
@@ -150,17 +114,14 @@ def compile_cpp(file_path: str):
 
 # ---------------- Java build/run helpers (NEW) ----------------
 def compile_java(file_path: str):
-    """
-    编译单个 .java 文件。要求：public class 与文件名同名。
-    返回 (run_cmd_list, display_name)
-    """
+    """Compile one .java file and return (run_cmd_list, display_name)."""
     if shutil.which("javac") is None or shutil.which("java") is None:
-        print("javac/java 未在 PATH 中，无法编译/运行 Java。请先安装 JDK 并将其加入 PATH。")
+        print("javac/java not found in PATH. Please install JDK and add it to PATH.")
         return None, None
 
     src_dir = os.path.dirname(file_path) or "."
     base = os.path.basename(file_path)
-    class_name = os.path.splitext(base)[0]  # 假设 public class 与文件名一致
+    class_name = os.path.splitext(base)[0]  # Assume public class name matches file name.
 
     result = subprocess.run(["javac", file_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if result.returncode != 0:
@@ -172,10 +133,9 @@ def compile_java(file_path: str):
 
 def build_and_get_runner(file_path: str):
     """
-    统一入口：根据扩展名选择 C++ 或 Java 的编译与运行方式。
-    返回 (run_cmd_list, display_name)
-      - C++：run_cmd_list = [<exe_path>]
-      - Java：run_cmd_list = ["java", "-cp", <dir>, <MainClass>]
+    Build a source file and return (run_cmd_list, display_name).
+      - C++: run_cmd_list = [<exe_path>]
+      - Java: run_cmd_list = ["java", "-cp", <dir>, <MainClass>]
     """
     ext = os.path.splitext(file_path)[1].lower()
     if ext == ".cpp":
@@ -186,16 +146,16 @@ def build_and_get_runner(file_path: str):
     elif ext == ".java":
         return compile_java(file_path)
     else:
-        print(f"不支持的文件类型：{file_path}（仅支持 .cpp 与 .java）")
+        print(f"Unsupported file type: {file_path} (only .cpp and .java are supported)")
         return None, None
 
 # ---------------- run single test (cpp or java) ----------------
 def run_single_test(problem_folder: str, src_filename: str):
     """
-    编译并运行 <src_filename>（.cpp 或 .java）：
-      - 优先从 <problem_folder>/tests/in 与 tests/out 读取用例（扩展名不限）
-      - 若无 in/out 子目录：从 <problem_folder>/tests 混放目录里按扩展推断输入/输出
-      - A=第1个，B=第2个…… 取第 N 个输入与第 N 个输出进行对拍。
+    Compile and run a single source file (.cpp or .java).
+      - Prefer tests/in + tests/out (any extensions).
+      - Fallback: mixed tests/ using OUTPUT_EXTS to split input/output files.
+      - A=1st, B=2nd, ... pick the Nth input/output by source filename.
     """
     src_path = os.path.join(problem_folder, src_filename)
     if not os.path.exists(src_path):
@@ -318,12 +278,13 @@ def create_cpp_files(directory: str, num_files: int):
     os.makedirs(directory, exist_ok=True)
     include_dir = os.path.join(directory, "include")
     os.makedirs(include_dir, exist_ok=True)
+    cpp_template = load_cpp_template()
 
     for i in range(num_files):
         filename = os.path.join(directory, f"{string.ascii_uppercase[i]}.cpp")
         if not os.path.exists(filename):
             with open(filename, "w", encoding="utf-8") as f:
-                f.write(CPP_TEMPLATE)
+                f.write(cpp_template)
             print(f"Created: {filename}")
         else:
             print(f"File already exists: {filename}")
@@ -423,7 +384,7 @@ def run_test_cases(problem_folder: str):
 
         tag = f"{os.path.basename(in_path)}"
         if process.returncode != 0:
-            print(f"❌ {src_filename} runtime error on {tag}:\n{process.stderr.decode()}")
+            print(f"鉂?{src_filename} runtime error on {tag}:\n{process.stderr.decode()}")
             continue
 
         output = process.stdout.decode()
@@ -483,3 +444,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
