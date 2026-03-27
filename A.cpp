@@ -16,6 +16,7 @@ using namespace __gnu_pbds;
 #define sz(x) (int)(x.size())
 #define yes "Yes"
 #define no "No"
+#define endl '\n'
 
 template <typename T>
 using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
