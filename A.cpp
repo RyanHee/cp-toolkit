@@ -22,14 +22,14 @@ template <typename T>
 using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
 template<class T>
-istream &operator>>(istream &is, vector<T> &v) {
-    for (auto &x : v) is >> x;
+istream &operator>>(istream &is, const vector<T> &v) {
+    for (auto &x:v) is >> x;
     return is;
 }
 
 template<class T>
 ostream &operator<<(ostream &os, const vector<T> &v) {
-    for (const auto &x : v) os << x << " ";
+    for (const auto &x:v) os << x << " ";
     return os;
 }
 
