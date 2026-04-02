@@ -18,12 +18,13 @@ using namespace __gnu_pbds;
 #define yes "Yes"
 #define no "No"
 #define endl '\n'
+#define debug(x) cout << #x << ": " << x << endl
 
 template <typename T>
 using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
 template<class T>
-istream &operator>>(istream &is, const vector<T> &v) {
+istream &operator>>(istream &is, vector<T> &v) {
     for (auto &x:v) is >> x;
     return is;
 }
