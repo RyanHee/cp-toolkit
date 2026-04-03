@@ -1,2 +1,2 @@
 @echo off
-C:\Program Files (x86)\OICPP IDE
+start "" "C:\Program Files (x86)\OICPP IDE\OICPP IDE.exe" %*
