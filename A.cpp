@@ -13,7 +13,8 @@ using namespace __gnu_pbds;
 #define all(x) (x).begin(), (x).end()
 #define rall(x) (x).rbegin(), (x).rend()
 #define lb(v, x) (int)(lower_bound(all(v), x)-(v).begin())
-#define up(v, x) (int)(upper_bound(all(v), x)-(v).begin())
+#define ub(v, x) (int)(upper_bound(all(v), x)-(v).begin())
+#define mmst(a, v, n) memset(a, v, n*sizeof(a[0]))
 #define fi first
 #define se second
 #define sz(x) (int)(x.size())
