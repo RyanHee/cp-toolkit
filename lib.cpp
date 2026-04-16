@@ -233,60 +233,44 @@ void bitmaskdpsubset(){
 // SegTree
 struct SegTree {
     int n;
-    vector<int>mn, mx;
-
+    vector<int>st;
+    SegTree() : n(0) {}
     SegTree(int n) : n(n) {
-        mn.assign(2*n, inf);
-        mx.assign(2*n, -inf);
+        st.assign(2*n, inf);
     }
-
-    void build(vector<int> &a) {
-        for (int i=0;i<n;++i) 
-            mn[n+i]=mx[n+i]=a[i];
+    
+    void build(const vector<int> &a) {
+        for (int i=0;i<n;++i) {
+            st[i+n]=a[i];
+        }
 
         for (int i=n-1;i;--i) {
-            mn[i]=min(mn[i<<1], mn[i<<1|1]);
-            mx[i]=max(mx[i<<1], mx[i<<1|1]);
+            st[i]=min(st[i<<1], st[(i<<1)|1]);
         }
     }
 
-    void update(int i, int val) {
+    void update(int i, const int val) {
         i+=n;
-        mn[i]=mx[i]=val;
-
+        st[i]=val;
         for (i>>=1;i;i>>=1) {
-            mn[i]=min(mn[i<<1], mn[i<<1|1]);
-            mx[i]=max(mx[i<<1], mx[i<<1|1]);
+            st[i]=min(st[i<<1], st[(i<<1)|1]);
         }
     }
 
-    int queryMin(int l, int r) {
-        int ret=inf;
-
+    int query(int l, int r) {
+        int ans=inf;
         for (l+=n, r+=n;l<r;l>>=1, r>>=1) {
-            if (l&1) 
-                ret=min(ret, mn[l++]);
-            if (!(r&1))
-                ret=min(ret, mn[r--]);
+            if (l&1) {
+                ans=min(ans, st[l++]);
+            }
+            if (r&1) {
+                ans=min(ans, st[--r]);
+            }
         }
-
-        return ret;
-    }
-
-    int queryMax(int l, int r) {
-        int ret=-inf;
-
-        for (l+=n, r+=n;l<r;l>>=1, r>>=1) {
-            if (l&1) 
-                ret=max(ret, mx[l++]);
-            if (!(r&1))
-                ret=max(ret, mx[r--]);
-        }
-
-        return ret;
+        return ans;
     }
 };
-// 0 indexed [l, r)
+// query for [l, r)
 
 void solve() {
     i128 x=0;
