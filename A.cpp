@@ -27,21 +27,21 @@ using namespace __gnu_pbds;
 template <typename T>
 using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
-template<class T>
+template<typename T>
 istream &operator>>(istream &is, vector<T> &v) {
     for (auto &x:v) is >> x;
     return is;
 }
 
-template<class T>
+template<typename T>
 ostream &operator<<(ostream &os, const vector<T> &v) {
     for (const auto &x:v) os << x << " ";
     return os;
 }
 
-template<class T>
+template<typename T>
 void chmin(T &a, T b) { a=min(a, b); }
-template<class T>
+template<typename T>
 void chmax(T &a, T b) { a=max(a, b); }
 
 void reset() { 
