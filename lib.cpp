@@ -27,79 +27,120 @@ ostream &operator<<(ostream &os, const vector<T> &v) {
 template<int P>
 struct MInt {
     int x;
-    constexpr MInt() : x(0) {}
-    template<class T>
-    constexpr MInt(T x) : x(norm(x%P)) {}
-    constexpr static int norm(int x) {
-        return (x<0?x+P:(x>=P?x-P:x));
+    MInt() : x(0) {}
+    MInt(int a) : x(nrm(a)) {}
+    
+    static int nrm(int a) {
+        a%=P;
+        return a<0?a+P:a;
     }
-    constexpr MInt operator-() const {
-        return MInt()-*this;
+
+    friend ostream& operator <<(ostream &os, const MInt &a) {
+        return os << a.x;
     }
-    constexpr MInt &operator+=(const MInt &a) {
-        x=norm(x+a.x);
-        return *this;
+
+    friend istream& operator >>(istream &is, MInt &a) {
+        int val;
+        is >> val;
+        a=MInt(val);
+        return is;
     }
-    constexpr MInt &operator-=(const MInt &a) {
-        x=norm(x-a.x);
-        return *this;
-    }
-    constexpr MInt &operator*=(const MInt &a) {
-        x=1ll*x*a.x%P;
-        return *this;
-    }
-    constexpr MInt &operator/=(const MInt &a) {
-        assert(a);
-        return *this*=a.inv();
-    }
-    constexpr friend MInt operator+(MInt l, const MInt &r) {
-        return l+=r;
-    }
-    constexpr friend MInt operator-(MInt l, const MInt &r) {
-        return l-=r;
-    }
-    constexpr friend MInt operator*(MInt l, const MInt &r) {
-        return l*=r;
-    }
-    constexpr friend MInt operator/(MInt l, const MInt &r) {
-        return l/=r;
-    }
+
     constexpr explicit operator bool() const {
         return x!=0;
     }
-    constexpr bool operator!() const {
+
+    constexpr bool operator !() const {
         return x==0;
     }
+
+    constexpr friend bool operator ==(const MInt &a, const MInt &b) {
+        return a.x==b.x;
+    }
+
+    constexpr friend bool operator !=(const MInt &a, const MInt &b) {
+        return a.x!=b.x;
+    }
+
+    constexpr MInt operator -() const {
+        return MInt(0)-*this;
+    }
+
+    constexpr MInt& operator +=(const MInt &a) {
+        x=nrm(x+a.x);
+        return *this;
+    }
+
+    constexpr MInt& operator -=(const MInt &a) {
+        x=nrm(x-a.x);
+        return *this;
+    }
+
+    constexpr MInt& operator *=(const MInt &a) {
+        x=x*a.x%P;
+        return *this;
+    }
+
+    constexpr MInt& operator /=(const MInt &a) {
+        assert(a.x>0);
+        return *this*=a.inv();
+    }
+
+    constexpr MInt power(int p) const {
+        assert(p>=0);
+        MInt ans=1, a=*this;
+        for (;p;p>>=1, a*=a) {
+            if (p&1) {
+                ans*=a;
+            }
+        }
+        return ans;
+    }
+
+    constexpr MInt& operator --() {
+        x=nrm(--x);
+        return *this;
+    }
+
+    constexpr MInt& operator ++() {
+        x=nrm(++x);
+        return *this;
+    }
+
+    constexpr MInt operator --(int) {
+        MInt a=*this;
+        --*this;
+        return a;
+    }
+
+    constexpr MInt operator ++(int) {
+        MInt a=*this;
+        ++*this;
+        return a;
+    }
+
     constexpr MInt inv() const {
-        int p=P-2;
-        MInt a=*this, ret(1);
-        for (;p;p>>=1, a*=a) 
-            if (p&1)
-                ret*=a;
-        return ret;
+        return power(P-2);
     }
-    friend ostream &operator<<(ostream &os, const MInt &a) {
-        return os << a.x;
+
+    constexpr friend MInt operator +(MInt a, const MInt &b) {
+        return a+=b;
     }
-    string find_Fraction() const {
-        for(int i=1; i<=1000000; ++i)
-            if((*this*i).x<=100)
-                return to_string((*this*i).x)+"/"+to_string(i);
-        return "not find.";
+
+    constexpr friend MInt operator -(MInt a, const MInt &b) {
+        return a-=b;
+    }
+
+    constexpr friend MInt operator *(MInt a, const MInt &b) {
+        return a*=b;
+    }
+
+    constexpr friend MInt operator /(MInt a, const MInt &b) {
+        return a/=b;
     }
 };
 constexpr int P=1e9+7;
 using Z = MInt<P>;
-constexpr Z power(Z a, int b) {
-    assert(b >= 0);
-    Z ret(1);
-    for(;b;b>>=1, a*=a)
-        if(b&1) 
-            ret*=a;
-    return ret;
-}
-template<int V>// invV<2> * 2 ==1 mod P
-constexpr Z invV = power(V, P - 2);
 
 // dsu
 constexpr int mxN=2e5+5, inf=1e18;
@@ -199,7 +240,7 @@ struct SegTree {
         mx.assign(2*n, -inf);
     }
 
-    void build() {
+    void build(vector<int> &a) {
         for (int i=0;i<n;++i) 
             mn[n+i]=mx[n+i]=a[i];
 
