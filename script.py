@@ -9,7 +9,7 @@ import shutil  # NEW: for javac/java detection
 import difflib
 
 # ---- Toolchain & flags (edit if needed) ----
-GPP = r"C:/msys64/mingw64/bin/g++.exe"  # your g++
+GPP = "/opt/homebrew/bin/g++-15"  # your g++
 STD = "-std=gnu++17"                    # C++17 with g++
 EXTRA_WARN = ["-Wall", "-Wextra", "-Wpedantic"]
 
@@ -99,7 +99,7 @@ def _sorted_files(dir_path: str):
 
 # ---------------- C++ build ----------------
 def compile_cpp(file_path: str):
-    exe_path = file_path.replace(".cpp", ".exe")
+    exe_path = file_path.replace(".cpp", "")
     directory = os.path.dirname(file_path)
     include_dir = os.path.join(directory, "include")
     include_flag = [f"-I{include_dir}"] if os.path.exists(include_dir) else []

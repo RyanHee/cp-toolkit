@@ -20,9 +20,9 @@ using namespace __gnu_pbds;
 #define sz(x) (int)(x.size())
 #define yes "Yes"
 #define no "No"
-#define endl '\n'
-#define neg1 void(cout << -1 << endl)
-#define debug(x) cout << #x << ": " << x << endl
+#define nl '\n'
+#define neg1 void(cout << -1 << nl)
+#define debug(x) cout << #x << ": " << x << nl
 
 template <typename T>
 using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
