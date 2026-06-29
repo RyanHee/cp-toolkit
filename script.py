@@ -268,10 +268,10 @@ def write_compile_commands(directory: str):
         })
 
     out_path = root / "compile_commands.json"
-    with open(out_path, "w", encoding="utf-8") as f:
-        json.dump(entries, f, indent=2)
+    # with open(out_path, "w", encoding="utf-8") as f:
+    #     json.dump(entries, f, indent=2)
 
-    print(f"Wrote: {out_path} ({len(entries)} files)")
+    # print(f"Wrote: {out_path} ({len(entries)} files)")
 
 # ---------------- creators ----------------
 def create_cpp_files(directory: str, num_files: int):
