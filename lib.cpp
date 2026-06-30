@@ -107,13 +107,13 @@ struct MInt {
         return *this;
     }
 
-    constexpr MInt operator --(int) {
+    constexpr MInt operator --(signed) {
         MInt a=*this;
         --*this;
         return a;
     }
 
-    constexpr MInt operator ++(int) {
+    constexpr MInt operator ++(signed) {
         MInt a=*this;
         ++*this;
         return a;
