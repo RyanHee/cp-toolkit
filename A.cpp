@@ -49,7 +49,7 @@ void reset() {
 }
 
 void solve() {
-
+    reset();
 }
 
 signed main() {
