@@ -274,6 +274,10 @@ struct SegTree {
 
 void solve() {
     i128 x=0;
+    Z x=1;
+    x*=5
+    x/=3;
+    x+=42;
 }
 
 signed main() {
