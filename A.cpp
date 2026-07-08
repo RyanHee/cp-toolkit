@@ -23,6 +23,7 @@ using namespace __gnu_pbds;
 #define nl '\n'
 #define neg1 void(cout << -1 << nl)
 #define debug(x) cout << #x << ": " << x << nl
+const ar<string, 2>_yn={no, yes};
 
 template <typename T>
 using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
