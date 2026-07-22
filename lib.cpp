@@ -142,6 +142,119 @@ struct MInt {
 constexpr int P=1e9+7;
 using Z = MInt<P>;
 
+struct frac {
+    int zi, mu;
+    constexpr frac(int a, int b) : zi(a), mu(b) {yue();}
+    constexpr frac() : zi(0), mu(1) {}
+    constexpr frac(int a) : zi(a), mu(1) {}
+
+    constexpr void yue() {
+        assert(mu);
+        int g=gcd(zi, mu);
+        zi/=g, mu/=g;
+        if (mu<0) {
+            zi*=-1, mu*=-1;
+        }
+    }
+
+    friend istream& operator >>(istream &is, frac &f) {
+        int a, b;
+        is >> a >> b;
+        f=frac(a, b);
+        return is;
+    }
+
+    friend ostream& operator <<(ostream &os, const frac &f) {
+        return os << f.zi << '/' << f.mu;
+    }
+
+    constexpr frac operator -() const {
+        return frac(-zi, mu);
+    }
+
+    constexpr explicit operator bool() const {
+        return zi;
+    }
+
+    constexpr friend bool operator ==(const frac &a, const frac &b) {
+        return (a && b)?(a.zi==b.zi && a.mu==b.mu):(a.zi==b.zi);
+    }
+
+    constexpr friend bool operator !=(const frac &a, const frac &b) {
+        return !(a==b);
+    }
+
+    constexpr friend bool operator <(const frac &a, const frac &b) {
+        return (i128)a.zi*b.mu<(i128)b.zi*a.mu;
+    }
+
+    constexpr friend bool operator >(const frac &a, const frac &b) {
+        return b<a;
+    }
+
+    constexpr friend bool operator <=(const frac &a, const frac &b) {
+        return !(a>b);
+    }
+
+    constexpr friend bool operator >=(const frac &a, const frac &b) {
+        return !(a<b);
+    }
+
+    constexpr frac inv() const {
+        assert(zi);
+        return frac(mu, zi);
+    }
+
+    constexpr frac& operator +=(const frac &a) {
+        int l=lcm(mu, a.mu);
+        zi=zi*(l/mu)+a.zi*(l/a.mu);
+        mu=l;
+        yue();
+        return *this;
+    }
+
+    constexpr frac& operator -=(const frac &a) {
+        int l=lcm(mu, a.mu);
+        zi=zi*(l/mu)-a.zi*(l/a.mu);
+        mu=l;
+        yue();
+        return *this;
+    }
+
+    constexpr frac& operator *=(const frac &a) {
+        frac f=a;
+        int g=gcd(zi, f.mu);
+        zi/=g, f.mu/=g;
+        g=gcd(mu, f.zi);
+        mu/=g, f.zi/=g;
+        zi*=f.zi, mu*=f.mu;
+        yue();
+        return *this;
+    }
+
+    constexpr frac& operator /=(const frac &a) {
+        assert(a.zi);
+        return *this*=a.inv();
+    }
+
+    constexpr friend frac operator +(frac a, const frac &b) {
+        return a+=b;
+    }
+
+    constexpr friend frac operator -(frac a, const frac &b) {
+        return a-=b;
+    }
+
+    constexpr friend frac operator *(frac a, const frac &b) {
+        return a*=b;
+    }
+
+    constexpr friend frac operator /(frac a, const frac &b) {
+        assert(b.zi);
+        return a/=b;
+    }
+};
+
 // dsu
 constexpr int mxN=2e5+5, inf=1e18;
 int rep[mxN], R[mxN];
